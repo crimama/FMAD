@@ -173,7 +173,22 @@ def knn_anomaly_score(train_features: np.ndarray, test_features: np.ndarray, k: 
     return distances.mean(axis=1)
 
 
-def evaluate_category(cat_data: dict, nuisance_dirs: np.ndarray | None, k: int = 5) -> dict:
+def mahalanobis_anomaly_score(train_features: np.ndarray, test_features: np.ndarray) -> np.ndarray:
+    """Compute Mahalanobis distance as anomaly score."""
+    mean = train_features.mean(axis=0)
+    centered = train_features - mean
+    cov = np.cov(centered.T)
+    # Regularize
+    cov += np.eye(cov.shape[0]) * 1e-6
+    cov_inv = np.linalg.inv(cov)
+
+    test_centered = test_features - mean
+    # Mahalanobis: sqrt((x-mu)^T @ Σ^-1 @ (x-mu))
+    scores = np.sqrt(np.sum(test_centered @ cov_inv * test_centered, axis=1))
+    return scores
+
+
+def evaluate_category(cat_data: dict, nuisance_dirs: np.ndarray | None, k: int = 5, scoring: str = "knn") -> dict:
     """Evaluate one category with optional nuisance projection."""
     train = cat_data["train_normal"]
     test_n = cat_data["test_normal"]
@@ -188,9 +203,13 @@ def evaluate_category(cat_data: dict, nuisance_dirs: np.ndarray | None, k: int =
         test_n = project_out_nuisance(test_n, nuisance_dirs)
         test_a = project_out_nuisance(test_a, nuisance_dirs)
 
-    # kNN scoring
-    scores_n = knn_anomaly_score(train, test_n, k=k)
-    scores_a = knn_anomaly_score(train, test_a, k=k)
+    # Scoring
+    if scoring == "mahalanobis":
+        scores_n = mahalanobis_anomaly_score(train, test_n)
+        scores_a = mahalanobis_anomaly_score(train, test_a)
+    else:
+        scores_n = knn_anomaly_score(train, test_n, k=k)
+        scores_a = knn_anomaly_score(train, test_a, k=k)
 
     labels = np.concatenate([np.zeros(len(scores_n)), np.ones(len(scores_a))])
     scores = np.concatenate([scores_n, scores_a])
@@ -242,8 +261,8 @@ def run(args):
         aurocs_base = []
         aurocs_nsp = []
         for cat in sorted(dataset.keys()):
-            r_base = evaluate_category(dataset[cat], nuisance_dirs=None, k=args.k)
-            r_nsp = evaluate_category(dataset[cat], nuisance_dirs=nuisance_dirs, k=args.k)
+            r_base = evaluate_category(dataset[cat], nuisance_dirs=None, k=args.k, scoring=args.scoring)
+            r_nsp = evaluate_category(dataset[cat], nuisance_dirs=nuisance_dirs, k=args.k, scoring=args.scoring)
 
             if r_base["auroc"] is not None:
                 delta = (r_nsp["auroc"] - r_base["auroc"]) * 100
@@ -291,6 +310,7 @@ if __name__ == "__main__":
     parser.add_argument("--layer", type=int, default=11)
     parser.add_argument("--n_components", type=int, default=10, help="Number of nuisance directions to remove")
     parser.add_argument("--k", type=int, default=5, help="kNN k")
+    parser.add_argument("--scoring", type=str, default="knn", choices=["knn", "mahalanobis"])
     parser.add_argument("--output_dir", type=str, default="results/phase3")
     args = parser.parse_args()
     run(args)
