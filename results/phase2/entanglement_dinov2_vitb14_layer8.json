@@ -1,0 +1,7 @@
+{
+  "entanglement_metrics": {
+    "shift_anomaly_cosine_similarity": 0.06272455304861069,
+    "pc_projection_correlation": 0.11637657503087,
+    "shared_top10_ratio": 0.3,
+    "shared_top10_indices": [
+      

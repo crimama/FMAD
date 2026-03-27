@@ -1,0 +1,18 @@
+commit	ad2_auroc	ad1_auroc	status	description
+baseline	0.5440	0.9160	keep	kNN baseline (no projection) K=5 L11
+nsp_k30	0.6790	0.9190	keep	NSP linear projection K=30 L11
+aef6fde	0.6800	0.9430	keep	CLS+patch_mean L2norm K=30 L11
+aa8974f	0.7140	0.9740	keep	Mahalanobis scoring + CLS+patch L2norm + NSP K=30 L11
+exp3	0.7500	0.9640	keep	Mahalanobis + CLS+patch L2norm + NSP K=30 L8 (robust layer)
+7f8d40e	0.7250	0.9770	discard	multi-layer 8+11 Mahalanobis NSP K=30 (worse than L8 only)
+exp5	0.7850	0.9630	keep	Mahalanobis + CLS+patch L2norm + NSP K=50 L8
+exp6	0.8380	0.9630	keep	Mahalanobis + CLS+patch L2norm + NSP K=100 L8
+7c7b35b	0.7710	0.9640	discard	condition_union K=100 L8 (worse than standard PCA)
+7c7b35b	0.8380	0.9630	discard	whitened PCA K=100 L8 (equal to standard not better)
+b9c973f	0.7250	0.9640	discard	soft anomaly-preserving projection K=100 L8 (too conservative)
+b5fdd9f	0.5900	0.9500	discard	RANP signal subspace n=200 L8 (AD2 worse than baseline + AD1 drops)
+d34809f	0.8030	0.9320	discard	PCA-whitened Mahalanobis n_pca=200 K=100 L8 (AD2 worse than best)
+d5cea64	0.5950	0.9630	discard	train-only nuisance n=500 L8 (no effect - low-var PCs != shift dirs)
+9d4db29	0.6090	0.9640	discard	hybrid NSP filter_pct=50 K=100 L8 (filter too aggressive)
+e0524b6	0.6670	0.9640	discard	adaptive K max=200 L8 (K selected too conservatively)
+13e0695	0.7480	0.9640	discard	dual-space α=0.7 K=100 L8 (original space dilutes projected)

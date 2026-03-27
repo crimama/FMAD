@@ -1,0 +1,30 @@
+FROM python:3.10-slim
+
+SHELL ["/bin/bash", "-lc"]
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    libglib2.0-0 \
+    libgl1 \
+    libgomp1 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+COPY baselines/anomalydino/requirements.txt /tmp/anomalydino-requirements.txt
+COPY scripts/run_anomalydino.sh /workspace/scripts/run_anomalydino.sh
+
+RUN grep -Ev '^(torch|torchvision|faiss-gpu)([[:space:]]|[<>=!~]|$)' /tmp/anomalydino-requirements.txt > /tmp/anomalydino-pip.txt && \
+    python -m pip install --upgrade pip setuptools wheel && \
+    python -m pip install torch==2.5.1+cu124 torchvision==0.20.1+cu124 --extra-index-url https://download.pytorch.org/whl/cu124 && \
+    python -m pip install -r /tmp/anomalydino-pip.txt && \
+    python -m pip install "faiss-gpu-cu12[fix-cuda]"
+
+CMD ["/bin/bash"]

@@ -1,0 +1,22 @@
+# Runtime
+run.log
+*.pyc
+__pycache__/
+
+# Large files
+baselines/*/upstream/
+baselines/dinomaly/checkpoints/
+baselines/anomalyclip/checkpoints/
+baselines/anomalyclip/_prepared_data/
+baselines/anomalyclip/results/
+
+# Data
+data/
+*.tar.gz
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

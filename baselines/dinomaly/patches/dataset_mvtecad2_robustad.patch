@@ -1,0 +1,13 @@
+--- a/dataset.py
++++ b/dataset.py
+@@
++class MVTecAD2Dataset(MVTecDataset):
++    """MVTec-AD 2 wrapper for MVTec-style directory layouts."""
++
++    pass
++
++
++class RobustADDataset(MVTecDataset):
++    """RobustAD wrapper for MVTec-style directory layouts."""
++
++    pass

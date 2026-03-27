@@ -1,0 +1,14 @@
+torch
+torchvision
+opencv-python
+matplotlib
+Pillow
+numpy==1.26
+scipy
+scikit-learn
+faiss-gpu
+tqdm
+tifffile
+argparse
+PyYAML
+pandas

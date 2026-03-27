@@ -1,0 +1,9 @@
+{
+  "method": "AnomalyDINO",
+  "dataset": "robustad",
+  "status": "not_run_in_this_workspace",
+  "reason": "The current workspace cannot resolve github.com, so the upstream AnomalyDINO repository could not be cloned here. scripts/run_anomalydino.sh will overwrite this file with real aggregated metrics once the upstream source and dataset root are available.",
+  "source_data_root": "/home/hun/Volume/DATA/robustad",
+  "expected_shots": [1, 4, 8],
+  "expected_num_seeds": 3
+}
