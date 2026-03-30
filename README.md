@@ -6,7 +6,8 @@ FM(DINOv2/CLIP) 기반 Visual Anomaly Detection의 distribution shift 취약성�
 
 1. **FM-AD는 깨진다**: 3개 SOTA 방법 모두 MVTec AD 2에서 25-34pp I-AUROC 하락
 2. **원인은 Linear Entanglement**: DINOv2 feature에서 nuisance(shift)와 anomaly 신호가 같은 PC를 공유 (correlation 0.53)
-3. **단순한 해법이 최적**: Post-hoc linear projection (NSP)으로 +29.4pp 개선, clean 성능 유지. 10개 복잡한 변형 모두 열등.
+3. **Oracle fix**: Paired data가 있으면 post-hoc linear NSP로 +29.4pp 개선 (학습 0개)
+4. **현재 탐색 중**: Paired data 없이 test-time에 nuisance를 추정하는 TTNS 방법론 검증
 
 ## 프로젝트 구조
 
@@ -20,7 +21,9 @@ FM(DINOv2/CLIP) 기반 Visual Anomaly Detection의 distribution shift 취약성�
 ├── results/                    # 실험 결과 JSON
 │   ├── phase1/                 # Baseline 재현
 │   ├── phase2/                 # Feature 분석
-│   └── phase3/                 # NSP 실험
+│   ├── phase3/                 # NSP 실험
+│   ├── sapp/                   # SAPP 실험 (실패)
+│   └── ttns/                   # TTNS 실험 (진행중)
 ├── skill_graph/                # 연구 노트 & 실험 보고서
 │   ├── experiments/            # 6단계 실험 보고서
 │   ├── analysis/               # 분석 문서
@@ -74,28 +77,41 @@ docker run --rm --gpus all --shm-size=4g \
   "
 ```
 
+<!-- AUTO-GENERATED: scripts reference -->
 ## 스크립트 참조
 
+### 핵심 방법론
 | 스크립트 | 용도 |
 |----------|------|
-| `phase3_nsp_experiment.py` | NSP 방법론 실험 (feature extraction + projection + scoring) |
+| `ttns_experiment.py` | **TTNS**: test-time nuisance subspace (unpaired, ΔΣ decomposition) |
+| `phase3_nsp_experiment.py` | **NSP**: paired nuisance subspace projection (oracle) |
+| `sapp_experiment.py` | **SAPP**: variance-gated projection (실패, 참고용) |
+
+### 분석
+| 스크립트 | 용도 |
+|----------|------|
 | `phase2_feature_analysis.py` | DINOv2 layer별 shift 정량화 |
-| `phase2_entanglement_analysis.py` | Nuisance-anomaly entanglement PCA 분석 + t-SNE |
-| `prepare_mvtecad2_compat.py` | MVTec AD 2 → MVTec AD 호환 symlink 생성 |
-| `prepare_robustad_compat.py` | RobustAD → MVTec AD 호환 symlink 생성 |
-| `run_anomalyclip.sh` | AnomalyCLIP baseline 실행 |
-| `run_anomalydino.sh` | AnomalyDINO baseline 실행 |
-| `run_dinomaly.sh` | Dinomaly baseline 실행 |
-| `collect_results.py` | Baseline 결과 수집 → Markdown 표 |
-| `verify_datasets.py` | 데이터셋 구조 검증 |
+| `phase2_entanglement_analysis.py` | Nuisance-anomaly entanglement PCA + t-SNE |
+
+### 데이터/유틸리티
+| 스크립트 | 용도 |
+|----------|------|
+| `prepare_mvtecad2_compat.py` | MVTec AD 2 → MVTec AD 호환 symlink |
+| `prepare_robustad_compat.py` | RobustAD → MVTec AD 호환 symlink |
+| `run_anomalyclip.sh` / `run_anomalydino.sh` / `run_dinomaly.sh` | Baseline 실행 |
+| `collect_results.py` / `verify_datasets.py` | 결과 수집, 데이터 검증 |
+<!-- END AUTO-GENERATED -->
 
 ## 현재 상태 (2026-03-27)
 
-- **Phase 1-3 완료**: Baseline 재현 → Feature 분석 → NSP 방법론
-- **Best 결과**: AD2 83.8% (+29.4pp), AD1 96.3% (-0.2pp)
-- **방향**: 방법론 novelty 탐색 중, fallback으로 분석+이론 논문
+- **Phase 1-3 완료**: Baseline 재현 → Feature 분석 → NSP(oracle)
+- **NSP (oracle, paired)**: AD2 83.8% (+29.4pp), AD1 96.3%
+- **SAPP (gated projection)**: 실패 — NSP 대비 -6~9pp
+- **TTNS (test-time, unpaired)**: 검증 중 — GO/NO-GO 실험 진행
+- **방향 전환**: NSP = oracle upper bound, TTNS = practical method (핵심 contribution)
+- **12개 novel method 시도**: 모두 NSP 열등 → "linear hard projection이 최적" 강한 증거
 
-상세: `handoff.md`, `skill_graph/experiments/` 참조.
+상세: `handoff.md`, `skill_graph/MASTER_REPORT.md` 참조.
 
 ## 환경
 

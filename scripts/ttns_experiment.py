@@ -80,6 +80,38 @@ def extract_dataset(data_root: str, extractor, max_per_cat: int = 200) -> dict:
 
 # ─── Nuisance Estimation Methods ───────────────────────────────────
 
+def select_likely_normals(
+    train: np.ndarray,
+    test_all: np.ndarray,
+    keep_ratio: float = 0.5,
+    n_iters: int = 2,
+) -> np.ndarray:
+    """Iteratively keep low-score test samples as likely normals.
+
+    This targets anomaly contamination in test-time statistics.
+    """
+    if len(test_all) == 0:
+        return test_all
+
+    keep_count = max(1, int(len(test_all) * keep_ratio))
+    selected = test_all
+
+    mu = train.mean(axis=0)
+    cov = np.cov((train - mu).T) + np.eye(train.shape[1]) * 1e-6
+    cov_inv = np.linalg.inv(cov)
+
+    for _ in range(max(1, n_iters)):
+        centered = selected - mu
+        scores = np.sqrt(np.sum(centered @ cov_inv * centered, axis=1))
+        idx = np.argsort(scores)
+        selected = selected[idx[: min(keep_count, len(selected))]]
+
+        mu = selected.mean(axis=0)
+        cov = np.cov((selected - mu).T) + np.eye(train.shape[1]) * 1e-6
+        cov_inv = np.linalg.inv(cov)
+
+    return selected
+
 def ttns_covariance_shift(train: np.ndarray, test_all: np.ndarray, robust: bool = True) -> np.ndarray:
     """Estimate nuisance from ΔΣ = Σ_test - Σ_train.
 
@@ -89,12 +121,8 @@ def ttns_covariance_shift(train: np.ndarray, test_all: np.ndarray, robust: bool 
     sigma_train = np.cov(train.T) + np.eye(train.shape[1]) * 1e-6
 
     if robust and len(test_all) > 20:
-        # 1st pass: Mahalanobis to filter outliers
-        sigma_inv = np.linalg.inv(sigma_train)
-        test_c = test_all - mu_train
-        scores = np.sqrt(np.sum(test_c @ sigma_inv * test_c, axis=1))
-        mask = scores < np.percentile(scores, 90)
-        test_clean = test_all[mask]
+        test_clean = select_likely_normals(train, test_all, keep_ratio=0.5, n_iters=2)
+        print(f"    robust selection: kept {len(test_clean)}/{len(test_all)} likely-normal samples")
     else:
         test_clean = test_all
 
@@ -126,12 +154,9 @@ def ttns_mean_shift(train: np.ndarray, test_all: np.ndarray, robust: bool = True
     mu_train = train.mean(axis=0)
 
     if robust and len(test_all) > 20:
-        sigma_train = np.cov(train.T) + np.eye(train.shape[1]) * 1e-6
-        sigma_inv = np.linalg.inv(sigma_train)
-        test_c = test_all - mu_train
-        scores = np.sqrt(np.sum(test_c @ sigma_inv * test_c, axis=1))
-        mask = scores < np.percentile(scores, 90)
-        mu_test = test_all[mask].mean(axis=0)
+        test_clean = select_likely_normals(train, test_all, keep_ratio=0.5, n_iters=2)
+        mu_test = test_clean.mean(axis=0)
+        print(f"    robust selection: kept {len(test_clean)}/{len(test_all)} likely-normal samples")
     else:
         mu_test = test_all.mean(axis=0)
 
@@ -267,11 +292,11 @@ def run(args):
 
     print(f"\n[2/3] Extracting features...")
     print("  --- MVTec AD 2 ---")
-    ds_ad2 = extract_dataset(args.data_root_ad2, extractor, max_per_cat=200)
+    ds_ad2 = extract_dataset(args.data_root_ad2, extractor, max_per_cat=args.max_per_cat)
     ds_ad1 = None
     if args.data_root_ad1:
         print("  --- MVTec AD ---")
-        ds_ad1 = extract_dataset(args.data_root_ad1, extractor, max_per_cat=200)
+        ds_ad1 = extract_dataset(args.data_root_ad1, extractor, max_per_cat=args.max_per_cat)
 
     print(f"\n[3/3] Evaluating all methods...")
 
@@ -331,6 +356,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="dinov2_vitb14")
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--layer", type=int, default=8)
+    parser.add_argument("--max_per_cat", type=int, default=200)
     parser.add_argument("--output_dir", type=str, default="results/ttns")
     args = parser.parse_args()
     run(args)
