@@ -1,0 +1,113 @@
+{
+  "d1_mean_angle": 62.217655181884766,
+  "d1_frac_below_45": 0.2,
+  "d1_top20_angles": [
+    12.081111907958984,
+    17.635257720947266,
+    23.383747100830078,
+    27.973155975341797,
+    32.93769454956055,
+    36.618919372558594,
+    38.6109733581543,
+    39.44096755981445,
+    43.164955139160156,
+    43.96965789794922,
+    47.14313888549805,
+    48.93800735473633,
+    49.564170837402344,
+    51.054927825927734,
+    53.46925735473633,
+    54.114559173583984,
+    54.51470184326172,
+    56.03603744506836,
+    57.26470184326172,
+    58.520626068115234
+  ],
+  "d2_oracle_explained_by_synthetic": 0.3426409661769867,
+  "d2b_synthetic_explained_by_oracle": 0.35851654410362244,
+  "d3_per_augmentation": {
+    "blur_heavy": {
+      "magnitude": 0.11708428710699081,
+      "oracle_explained": 0.2980267405509949
+    },
+    "blur_light": {
+      "magnitude": 0.022452211007475853,
+      "oracle_explained": 0.2935006618499756
+    },
+    "blur_medium": {
+      "magnitude": 0.05376732721924782,
+      "oracle_explained": 0.28986504673957825
+    },
+    "brightness_down": {
+      "magnitude": 0.0660398080945015,
+      "oracle_explained": 0.3196805715560913
+    },
+    "brightness_strong_down": {
+      "magnitude": 0.1388470083475113,
+      "oracle_explained": 0.31642332673072815
+    },
+    "brightness_strong_up": {
+      "magnitude": 0.18151667714118958,
+      "oracle_explained": 0.32764485478401184
+    },
+    "brightness_up": {
+      "magnitude": 0.10516586154699326,
+      "oracle_explained": 0.3173130452632904
+    },
+    "color_jitter_cool": {
+      "magnitude": 0.03359978273510933,
+      "oracle_explained": 0.25181880593299866
+    },
+    "color_jitter_warm": {
+      "magnitude": 0.03643621504306793,
+      "oracle_explained": 0.3009476363658905
+    },
+    "contrast_down": {
+      "magnitude": 0.05683617293834686,
+      "oracle_explained": 0.3134787976741791
+    },
+    "contrast_strong": {
+      "magnitude": 0.12029323726892471,
+      "oracle_explained": 0.3308960497379303
+    },
+    "contrast_up": {
+      "magnitude": 0.07156677544116974,
+      "oracle_explained": 0.3365701138973236
+    },
+    "gamma_bright": {
+      "magnitude": 0.04950152337551117,
+      "oracle_explained": 0.3068314790725708
+    },
+    "gamma_dark": {
+      "magnitude": 0.06381533294916153,
+      "oracle_explained": 0.3102375864982605
+    },
+    "hue_shift": {
+      "magnitude": 0.01832359842956066,
+      "oracle_explained": 0.2388853281736374
+    },
+    "noise_gaussian": {
+      "magnitude": 0.16660051047801971,
+      "oracle_explained": 0.2896179258823395
+    },
+    "saturation_down": {
+      "magnitude": 0.03868230804800987,
+      "oracle_explained": 0.25006070733070374
+    },
+    "saturation_up": {
+      "magnitude": 0.024357084184885025,
+      "oracle_explained": 0.2273116409778595
+    },
+    "sharpness_up": {
+      "magnitude": 0.012353693135082722,
+      "oracle_explained": 0.28520679473876953
+    }
+  },
+  "d4_oracle_magnitude": 0.08397296816110611,
+  "verdict": "CONDITIONAL",
+  "config": {
+    "K": 50,
+    "layer": 8,
+    "n_augmentations": 19
+  }
+}

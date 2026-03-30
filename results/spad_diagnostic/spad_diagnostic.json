@@ -1,0 +1,96 @@
+{
+  "d0_uniformity": {
+    "can": {
+      "mean_uniformity": 0.01467155385762453,
+      "std_uniformity": 0.006058170925825834,
+      "min_uniformity": 0.005287230014801025,
+      "mean_global_norm": 0.30496177077293396,
+      "mean_residual_norm": 2.4082953929901123,
+      "n_pairs": 60
+    },
+    "fabric": {
+      "mean_uniformity": 0.027025114744901657,
+      "std_uniformity": 0.008982394821941853,
+      "min_uniformity": 0.010525226593017578,
+      "mean_global_norm": 0.28589585423469543,
+      "mean_residual_norm": 1.6372041702270508,
+      "n_pairs": 55
+    },
+    "fruit_jelly": {
+      "mean_uniformity": 0.009381898678839207,
+      "std_uniformity": 0.005021436605602503,
+      "min_uniformity": 0.005672931671142578,
+      "mean_global_norm": 0.19454748928546906,
+      "mean_residual_norm": 2.0293478965759277,
+      "n_pairs": 15
+    },
+    "rice": {
+      "mean_uniformity": 0.023293647915124893,
+      "std_uniformity": 0.004774413071572781,
+      "min_uniformity": 0.010236680507659912,
+      "mean_global_norm": 0.3333854079246521,
+      "mean_residual_norm": 2.1027634143829346,
+      "n_pairs": 35
+    },
+    "sheet_metal": {
+      "mean_uniformity": 0.044900309294462204,
+      "std_uniformity": 0.013674273155629635,
+      "min_uniformity": 0.026040256023406982,
+      "mean_global_norm": 0.7666682004928589,
+      "mean_residual_norm": 3.2900338172912598,
+      "n_pairs": 20
+    },
+    "vial": {
+      "mean_uniformity": 0.04100608080625534,
+      "std_uniformity": 0.032076168805360794,
+      "min_uniformity": 0.007261872291564941,
+      "mean_global_norm": 0.7184492945671082,
+      "mean_residual_norm": 3.3427889347076416,
+      "n_pairs": 30
+    },
+    "wallplugs": {
+      "mean_uniformity": 0.02908812090754509,
+      "std_uniformity": 0.022680386900901794,
+      "min_uniformity": 0.0030887722969055176,
+      "mean_global_norm": 0.7249572277069092,
+      "mean_residual_norm": 3.506763219833374,
+      "n_pairs": 50
+    },
+    "walnuts": {
+      "mean_uniformity": 0.024350181221961975,
+      "std_uniformity": 0.015244546346366405,
+      "min_uniformity": 0.005223572254180908,
+      "mean_global_norm": 0.4257715344429016,
+      "mean_residual_norm": 2.432577610015869,
+      "n_pairs": 50
+    },
+    "OVERALL": {
+      "mean_uniformity": 0.025786617770791054,
+      "std_uniformity": 0.0183801781386137,
+      "min_uniformity": 0.0030887722969055176
+    }
+  },
+  "d2_patchcore": {
+    "can": 0.5572,
+    "fabric": 0.5311999999999999,
+    "fruit_jelly": 0.5860000000000001,
+    "rice": 0.6647619047619047,
+    "sheet_metal": 0.6833333333333333,
+    "vial": 0.9868571428571429,
+    "wallplugs": 0.45840000000000003,
+    "walnuts": 0.8312,
+    "MEAN": 0.6623690476190476
+  },
+  "d2_spad": {
+    "can": 0.5499999999999999,
+    "fabric": 0.5496,
+    "fruit_jelly": 0.573,
+    "rice": 0.6657142857142858,
+    "sheet_metal": 0.7200000000000001,
+    "vial": 0.9891428571428571,
+    "wallplugs": 0.4568,
+    "walnuts": 0.8371999999999999,
+    "MEAN": 0.6676821428571429
+  },
+  "verdict": "CONDITIONAL"
+}
